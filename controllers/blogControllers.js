@@ -28,33 +28,38 @@ export const createBlog = TryCatch(async(req, res, next)=>{
 
 })
 
-export const getAllBlogs = TryCatch(async(req, res, next)=>{
-    let {search} = req.query;
-    let query = {}
-
-    if(search){
-        query.$or = [
-            {title: {$regex: search, $options: "i"} },
-            {content: {$regex: search, $options: "i"} },
-        ]
+export const getAllBlogs = TryCatch(async (req, res, next) => {
+    let { search } = req.query;
+    let query = {};
+  
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { content: { $regex: search, $options: 'i' } },
+      ];
     }
-
+  
     const page = parseInt(req.query.page) || 1;
-    const limit = 5
+    const limit = 6;
     const skip = (page - 1) * limit;
-
-    const blogs = await Blog.find(query).populate('user', 'name email').sort({createdAt: -1}).skip(skip).limit(limit)
-
-    const total = await Blog.countDocuments();
-
+  
+    const blogs = await Blog.find(query)
+      .populate('user', 'name email')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+  
+    const total = await Blog.countDocuments(query); 
+  
     res.status(200).json({
       success: true,
       blogs,
       currentPage: page,
       totalPages: Math.ceil(total / limit),
+      totalBlogs: total,
     });
-});
-
+  });
+  
 export const getSingleBlog = TryCatch(async(req, res, next)=>{
     const id = req.params.id
     
