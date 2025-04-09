@@ -45,7 +45,7 @@ cd Omnify_Blog_backend
 npm install
 
 Create a .env file in the root directory:
-MONGo_URI = your mongo connection string
+MONGO_URI = your mongo connection string
 PORT = 5400
 JWT_SECRET = your jwt secret
 
